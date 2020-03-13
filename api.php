@@ -98,6 +98,7 @@ try {
 
 			// get forum
 			$forum = $user->get_forum($_GET['forum_id'], false);
+			$insights['users'] = $get_users->fetch_assoc()['count'];
 			if(!$forum)  {
 				_error(404);
 			}
@@ -110,7 +111,7 @@ try {
 			user_access();
 
 			// page header
-			page_header(__("Forums")." &rsaquo; ".__("Edit Thread"));
+			page_header(__("Forums")."  ".__("Edit Thread"));
 
 			// get thread
 			$thread = $user->get_forum_thread($_GET['thread_id']);
@@ -176,7 +177,7 @@ try {
 			// get replies
 			$replies = $user->get_forum_replies( array('user_id' => $user->_data['user_id']) );
 			/* assign variables */
-			$smarty->assign('replies', $replies);
+			$smarty->get_forum_replies('replies', $replies);
 			break;
 
 		case 'search':
@@ -212,6 +213,11 @@ try {
 } catch (Exception $e) {
 	_error(__("Error"), $e->getMessage());
 }
+
+$results = $user->search_forums($_GET['query'], $_GET['type'], $_GET['forum'], $_GET['recursive']);
+$smarty->assign('query', $_GET['query']);
+$smarty->assign('type', $_GET['type']);
+$smarty->assign('results', $results);
 
 // page footer
 page_footer("forums");
